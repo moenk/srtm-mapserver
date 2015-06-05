@@ -1,0 +1,124 @@
+MAP
+
+NAME SRTM30
+STATUS ON
+SIZE 1024 768
+EXTENT -180 -90 180 90
+UNITS DD
+MAXSIZE 4096
+FONTSET "srtm30.fonts"
+
+OUTPUTFORMAT
+  NAME "GEOTIFFINT16"
+  DRIVER "GDAL/GTiff"
+  MIMETYPE "image/tiff"
+  IMAGEMODE "INT16"
+  EXTENSION "tif"
+END
+
+SHAPEPATH "/home/geographie/moenkemt/srtm"
+UNITS dd 
+PROJECTION
+  "init=epsg:4326"
+END
+
+LEGEND
+  STATUS ON
+  KEYSIZE 18 12
+  LABEL
+    TYPE BITMAP
+    SIZE MEDIUM
+    COLOR 0 0 89
+  END
+END
+
+WEB
+  IMAGEPATH "/var/www/files/"
+  IMAGEURL "/files/"
+  METADATA
+  		"ows_enable_request" "*"
+      "wms_title" "SRTM30 WMS"
+      "wms_onlineresource" "http://r.geo.hu-berlin.de/cgi-bin/mapserv?map=/home/geographie/moenkemt/srtm30.map"
+      "wms_srs" "EPSG:4326 EPSG:4269 EPSG:3857"
+  		"wfs_title" "SRTM30 WFS"
+			"wfs_onlineresource" "http://r.geo.hu-berlin.de/cgi-bin/mapserv?map=/home/geographie/moenkemt/srtm30.map"
+			"wfs_srs" "EPSG:4326 EPSG:4269 EPSG:3978 EPSG:3857"
+  END
+END
+
+
+LAYER
+  NAME "SRTM"
+  STATUS ON
+  TYPE RASTER
+  TILEINDEX "srtm30.shp"
+  TILEITEM "location"
+  PROJECTION
+    "init=epsg:4326"
+  END
+  #PROCESSING "SCALE=0,3000"
+  #PROCESSING "SCALE=AUTO"
+  #PROCESSING "NODATA=-32768"
+  #OFFSITE 0 0 0 
+  CLASS
+    #EXPRESSION ([pixel] >= 0 AND [pixel] < 2000)
+    STYLE
+      COLORRANGE 0 0 0  255 255 255
+      DATARANGE 0 2000
+      RANGEITEM "pixel"
+    END
+  END
+  METADATA
+    "wcs_label" "SRTM WCS TIF Server"
+    "ows_extent" "-180 -90 180 90"
+    "wcs_resolution" "0.00083 -0.00083"
+    "ows_srs" "EPSG:4326"
+    "wcs_formats" "GEOTIFFINT16"
+    "wcs_nativeformat" "geotiff"
+    "wcs_enable_request" "*"
+  END
+END
+
+LAYER
+  	NAME "srtm_tiles"
+		DATA "srtm30.shp"
+		TYPE POLYGON
+		STATUS ON
+		DUMP ON
+		METADATA
+			"ows_enable_request" "*"
+			"wms_title"       "SRTM Tiles"
+			"wfs_title"       "SRTM Tiles"
+			"wfs_srs"           "epsg:4326"
+			"gml_include_items" "all"
+			"gml_featureid"     "location"
+			"wfs_enable_request" "*"
+		END
+		PROJECTION
+			"init=epsg:4326"
+		END
+  	LABELITEM "location"
+    CLASS
+  		NAME "srtm_tile"
+			STYLE
+				OPACITY 50
+				COLOR 245 245 220
+				OUTLINECOLOR 0 0 0
+				WIDTH 2
+			END
+			LABEL
+				COLOR 0 0 32
+				TYPE TRUETYPE
+				FONT "13"
+				SIZE 12
+				ANTIALIAS TRUE
+				POSITION CC
+				PARTIALS FALSE
+				MINDISTANCE 30
+				BUFFER 14
+			END # end of label
+		END
+END # Layer
+
+
+END
